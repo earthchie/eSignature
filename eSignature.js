@@ -5,6 +5,8 @@ class eSignature{
 
     /**
      * Signs the PDF with a certificate
+     * @param {Uint8Array} p12 - P12 bundle
+     * @param {String} password - P12 password
      * @param {Object} info - The information of the signature
      * @param {Date} info.date - the date the signing took place 
      * @param {String} info.reason - the reason the document was signed
@@ -17,7 +19,6 @@ class eSignature{
      * @param {Number} info.height - The height of the image
      * @param {Uint8Array} info.image - The visual image of the signature as a JPEG stream
      */
-
     async sign(p12, password, info){
         const P12 = await (new PKIWebSDK.Certificate()).parseP12(p12, password);
         const subject = await P12.certificate.getSubject();
