@@ -1,0 +1,56 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title>eSignature</title>
+</head>
+
+<body>
+    <form id="sign-pdf">
+        PDF
+        <input type="file" name="pdf" accept="application/pdf" required>
+        <br>
+        P12
+        <input type="file" name="p12" accept=".p12" required>
+        <br>
+        Password
+        <input type="password" name="password" required>
+        <br>
+        <button>Sign PDF</button>
+    </form>
+
+    <script src="pkiwebsdk.js"></script>
+    <script src="eSignature.js"></script>
+    <script>
+        document.getElementById('sign-pdf').onsubmit = async function (e) {
+            e.preventDefault();
+            
+            let password = this.password.value;
+            let pdf = await loadFile(this.pdf);
+            let p12 = await loadFile(this.p12);
+
+            let PDF = new eSignature(pdf);
+            await PDF.sign(p12, password);
+            
+            PDF.download();
+            
+            console.log(await PDF.signatures());
+
+            return false;
+        }
+
+        function loadFile(input) {
+            return new Promise((done) => {
+                let FR = new FileReader();
+
+                FR.onload = function () {
+                    done(new Uint8Array(FR.result));
+                };
+                FR.readAsArrayBuffer(input.files[0]);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
